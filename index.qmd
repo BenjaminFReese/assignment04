@@ -5,17 +5,19 @@ author: "Benjamin Reese and Sarah Hayes"
 format: html
 ---
 
-```{r}
+```{r, warning=FALSE, message=FALSE}
 library(readr)
 acs <- read_csv("usa_00003.csv")
 library(tidyverse)
 ```
+
+
 ## Figure One
 Figure one examines the income distribution by racial category. As the figure shows, all racial groups have a higher distribution of incomes closer to the poverty line. However, American Indians (Indigenous) have a larger amount of people closer to the poverty line, whereas for Asian Americans, they have the highest distribution of incomes. 
-```{r}
+```{r, warning = FALSE, message = FALSE}
 acs %>%
   filter(INCTOT < 200000 & INCTOT !=0 ) %>%
-  mutate(Race = case_when( ## creating new race variable
+  mutate(Race = case_when(
     RACE == 1 ~ "White",
     RACE == 2 ~ "Black",
     RACE == 3 ~ "American Indian",
@@ -31,19 +33,32 @@ acs %>%
           caption = "Data Source: IPUMS 2019 ACS")
 ```
 
-## Running Code
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+## Figure Two
 
-```{r}
-1 + 1
+Continuing with Figure Two, poverty line is broken down by racial and sex categories. Similar to figure one, there is a relative equal distribution between genders of each racial groups. Poverty between men and women remain similar between one another for each racial group. Similar to figure one, average poverty for Asian Americans is lower for both men and women amongst the racial groups, while Indigenous Americans and Black American are closer to the poverty line compared to the other groups.
+
+```{r, warning=FALSE, message=FALSE}
+
+acs %>%
+  filter(POVERTY > 0) %>%
+  mutate(Race = case_when( ## creating new race variable
+    RACE == 1 ~ "White",
+    RACE == 2 ~ "Black",
+    RACE == 3 ~ "American Indian",
+    RACE == 4 | RACE == 5 | RACE == 6 ~ "Asian or P I",
+    RACE > 6 ~ "Other"
+  )) %>%
+  mutate(Sex = case_when( ## creating new sex variable
+    SEX == 1 ~ "Male",
+    SEX == 2 ~ "Female",
+  )) %>%
+  ggplot(aes(Race, POVERTY, fill=Sex)) +
+  geom_boxplot() + 
+  theme_minimal() +
+  labs(y="Income as Percent of Poverty Level", x=NULL,
+       title = "Wages as Percent of Poverty Level Shows Variation in Income by Race",
+       subtitle = "Asian or P I Have Average Incomes Far Above Poverty Level",
+       caption = "Data Source: IPUMS 2019 ACS")
 ```
 
-You can add options to executable code like this 
-
-```{r}
-#| echo: false
-2 * 2
-```
-
-The `echo: false` option disables the printing of code (only output is displayed).
