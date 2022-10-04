@@ -5,9 +5,31 @@ author: "Benjamin Reese and Sarah Hayes"
 format: html
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+```{r}
+library(readr)
+acs <- read_csv("usa_00003.csv")
+library(tidyverse)
+```
+## Figure One
+Figure one examines the income distribution by racial category. As the figure shows, all racial groups have a higher distribution of incomes closer to the poverty line. However, American Indians (Indigenous) have a larger amount of people closer to the poverty line, whereas for Asian Americans, they have the highest distribution of incomes. 
+```{r}
+acs %>%
+  filter(INCTOT < 200000 & INCTOT !=0 ) %>%
+  mutate(Race = case_when( ## creating new race variable
+    RACE == 1 ~ "White",
+    RACE == 2 ~ "Black",
+    RACE == 3 ~ "American Indian",
+    RACE == 4 | RACE == 5 | RACE == 6 ~ "Asian or P I",
+    RACE > 6 ~ "Other"
+    )) %>%
+  ggplot(aes(Race, INCTOT)) +
+  geom_violin(col="blue", fill="light blue") +
+  theme_minimal() +
+  labs(x=NULL, y="Income",
+          title = "The Distribution of Income Is Largely Consistent Between Races",
+          subtitle = "Income by Race for Americans",
+          caption = "Data Source: IPUMS 2019 ACS")
+```
 
 ## Running Code
 
