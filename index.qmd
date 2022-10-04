@@ -1,6 +1,7 @@
 ---
 title: "index"
-author:"Benjamin Reese and Sarah Hayes"
+subtitle: "Link to Data Source https://usa.ipums.org/usa/"
+author: "Benjamin Reese and Sarah Hayes"
 format: html
 ---
 
