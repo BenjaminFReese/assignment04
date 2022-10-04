@@ -1,5 +1,5 @@
 ---
-title: "index"
+title: "Assignment 4"
 subtitle: "Link to Data Source https://usa.ipums.org/usa/"
 author: "Benjamin Reese and Sarah Hayes"
 format: html
@@ -62,8 +62,10 @@ acs %>%
        caption = "Data Source: IPUMS 2019 ACS")
 ```
 
-##Figure Three 
+## Figure Three 
+
 Breaking down income levels by college attainment for each gender also revealed patterns in wages. Having a college degree aid in a higher income attainment for both genders, however this is exceptionally true for men with degrees, who earns the most out of each category. Those with less than a a high school degree, for both genders, earn the least out of each education category. Surprisingly, those with a high school degree only make slightly less than those with some college.
+
 ```{r, message=FALSE, warning=FALSE}
 options(scipen = 99999)
 
@@ -99,3 +101,37 @@ acs_svy %>%
        subtitle = "Most Americans with $100,000+ Incomes Have College Degree",
        caption = "Data Source: IPUMS 2019 ACS")
 ```
+
+## Figure Four
+
+Figure four examines the likelihood someone receives additional income passed their earned labor wages. Racial differences appear when examining the income above wages. Most notably, all racial groups, except White Americans, appear to stop earning significantly more income once they reach more extra income. Asian Americans have a slightly less steep drop in those who are earning more income, but these results are still comparable to the other racial minorities groups. 
+
+```{r, warning=FALSE, message=FALSE}
+library(ggjoy)
+```
+
+
+```{r, warning=FALSE, message=FALSE}
+acs %>%
+  filter(INCTOT < 100000 & INCWAGE < 999997) %>%
+  mutate(Race = case_when( ## creating new race variable
+    RACE == 1 ~ "White",
+    RACE == 2 ~ "Black",
+    RACE == 3 ~ "American Indian",
+    RACE == 4 | RACE == 5 | RACE == 6 ~ "Asian or P I",
+    RACE > 6 ~ "Other"
+  )) %>%
+  mutate(income_above_wages = INCTOT-INCWAGE) %>%
+  filter(income_above_wages != 0) %>%
+  ggplot(aes(x=income_above_wages, y=Race, fill=Race)) +
+  geom_joy(scale=2) + 
+  scale_x_log10() +
+  theme_minimal() +
+  labs(x="log(Income Above Wages)", y=NULL,
+       title = "Whites More Likely To Receive Income Beyond Their Wages",
+       subtitle = "Income Beyond Wages Differs By Identity Group",
+       caption = "Data Source: IPUMS 2019 ACS")
+
+
+```
+
