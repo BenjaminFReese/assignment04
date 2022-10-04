@@ -62,3 +62,40 @@ acs %>%
        caption = "Data Source: IPUMS 2019 ACS")
 ```
 
+##Figure Three 
+Breaking down income levels by college attainment for each gender also revealed patterns in wages. Having a college degree aid in a higher income attainment for both genders, however this is exceptionally true for men with degrees, who earns the most out of each category. Those with less than a a high school degree, for both genders, earn the least out of each education category. Surprisingly, those with a high school degree only make slightly less than those with some college.
+```{r, message=FALSE, warning=FALSE}
+options(scipen = 99999)
+
+library(srvyr)
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+## Adding Weights
+acs_svy <- acs %>%
+  as_survey_design(weights = PERWT)
+
+## Barplot Seperated By Sex Including Survey Weights
+acs_svy %>%
+  filter(INCTOT > 100000 & INCTOT != 9999999) %>%
+  mutate(ed = case_when( ## creating new educ variable
+    EDUC <= 5 ~ "Less Than HS",
+    EDUC == 6 ~ "High School",
+    EDUC == 7 | EDUC == 8 | EDUC == 9 ~ "Some College",
+    EDUC >= 10 ~ "College+"
+  )) %>%
+  mutate(Sex = case_when( ## creating new sex variable
+    SEX == 1 ~ "Male",
+    SEX == 2 ~ "Female",
+  )) %>%
+  group_by(ed, Sex) %>%
+  summarize(n = unweighted(n())) %>%
+  ggplot(aes(x=ed, y=n, fill=Sex)) +
+  geom_bar(position="dodge", stat="identity") +
+  theme_minimal() +
+  labs(y="Number of Respondents", x=NULL,
+       title = "College Degree Holders Makeup Most High Earners",
+       subtitle = "Most Americans with $100,000+ Incomes Have College Degree",
+       caption = "Data Source: IPUMS 2019 ACS")
+```
