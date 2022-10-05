@@ -3,7 +3,7 @@ title: "Assignment 4"
 subtitle: "Link to Data Source https://usa.ipums.org/usa/"
 author: "Benjamin Reese and Sarah Hayes"
 format: html
-self contained: TRUE
+self-contained: true
 ---
 
 ```{r, warning=FALSE, message=FALSE}
