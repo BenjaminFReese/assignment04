@@ -3,6 +3,7 @@ title: "Assignment 4"
 subtitle: "Link to Data Source https://usa.ipums.org/usa/"
 author: "Benjamin Reese and Sarah Hayes"
 format: html
+self contained: TRUE
 ---
 
 ```{r, warning=FALSE, message=FALSE}
@@ -10,7 +11,6 @@ library(readr)
 acs <- read_csv("usa_00003.csv")
 library(tidyverse)
 ```
-
 
 ## Figure One
 Figure one examines the income distribution by racial category. As the figure shows, all racial groups have a higher distribution of incomes closer to the poverty line. However, American Indians (Indigenous) have a larger amount of people closer to the poverty line, whereas for Asian Americans, they have the highest distribution of incomes. 
